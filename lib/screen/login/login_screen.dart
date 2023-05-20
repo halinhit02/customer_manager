@@ -1,11 +1,17 @@
+import 'package:customer_manager/controller/auth_controller.dart';
 import 'package:customer_manager/util/app_constants.dart';
+import 'package:customer_manager/util/app_routes.dart';
+import 'package:customer_manager/util/dialog_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailEditingController = TextEditingController();
+    TextEditingController passwordEditingController = TextEditingController();
     return Scaffold(
       body: SafeArea(
           child: Padding(
@@ -30,7 +36,7 @@ class LoginScreen extends StatelessWidget {
               child: Text('Quản lí khách hàng dễ dàng hơn!'),
             ),
             TextField(
-              controller: TextEditingController(),
+              controller: emailEditingController,
               decoration: InputDecoration(
                   hintText: 'Tài khoản Email',
                   contentPadding: const EdgeInsets.symmetric(
@@ -48,7 +54,7 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             TextField(
-              controller: TextEditingController(),
+              controller: passwordEditingController,
               decoration: InputDecoration(
                   hintText: 'Mật khẩu',
                   contentPadding: const EdgeInsets.symmetric(
@@ -66,7 +72,26 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                String password = passwordEditingController.text;
+                String email = emailEditingController.text;
+                if (email.isEmpty) {
+                  DialogUtils.showMessage('Nhập email người dùng.');
+                  return;
+                } else if (!email.isEmail) {
+                  DialogUtils.showMessage('Email không đúng định dạng.');
+                } else if (password.isEmpty) {
+                  DialogUtils.showMessage('Nhập mật khẩu người dùng.');
+                  return;
+                } else if (password.length < 6) {
+                  DialogUtils.showMessage('Nhập mật khẩu từ 6 kí tự trở lên.');
+                  return;
+                } else {
+                  Get.find<AuthController>()
+                      .signInWithEmailPassword(email, password)
+                      .then((value) => Get.offAllNamed(AppRoutes.home));
+                }
+              },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(13),
               ),
@@ -88,5 +113,13 @@ class LoginScreen extends StatelessWidget {
         ),
       )),
     );
+  }
+}
+
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
   }
 }

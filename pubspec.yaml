@@ -38,8 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   get:
   firebase_core:
+  firebase_analytics:
   firebase_auth:
-  cloud_firestore:
+  firebase_database:
+  intl:
 
 dev_dependencies:
   flutter_test:
