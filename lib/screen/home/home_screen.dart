@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:customer_manager/screen/note/note_screen.dart';
 import 'package:customer_manager/util/app_constants.dart';
 import 'package:customer_manager/util/app_routes.dart';
 import 'package:customer_manager/util/dialog_utils.dart';
@@ -62,6 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
+              onSearchChanged: (value) {
+                Get.find<CustomerController>().searchCustomer(value);
+              },
             ),
             const SizedBox(
               height: 15,
@@ -98,10 +100,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: GetBuilder<CustomerController>(
                     builder: (customerController) {
-                  if (customerController.customerList.isEmpty) {
+                  if (customerController.customerList.isEmpty && !customerController.isLoading) {
                     return const Center(
                       child: Text('Không có dữ liệu.'),
                     );
+                  } else if (customerController.isLoading) {
+                   return const Center(
+                     child: CircularProgressIndicator(),
+                   );
                   }
                   return Column(
                     children: [
@@ -109,13 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           children: [
-                            MediaQuery.of(context).size.width > 400
-                                ? const SubItemBuilder(
-                                    flex: 1,
-                                    value: 'Id',
-                                    isTitle: true,
-                                  )
-                                : const SizedBox(),
                             const SubItemBuilder(
                               flex: 4,
                               value: 'Họ tên',
@@ -136,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 50,
                                   )
                                 : Flexible(
-                                    flex: 4,
+                                    flex: 5,
                                     child: Row(),
                                   ),
                           ],
@@ -152,20 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               appUser: user,
                               itemBg: AppConstants.colorItems[index % 6],
                               onItemClicked: () {
-                                /*showDialog(
-                                  context: context,
-                                  builder: (_) => Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: NoteScreen(
-                                      note: user.note,
-                                      onDone: (value) {
-                                        user.note = value;
-                                      },
-                                    ),
-                                  ),
-                                );*/
                                 showDialog(
                                   context: context,
                                   builder: (_) => Dialog(
@@ -202,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         DialogUtils.showLoading();
                                         await customerController
                                             .updateCustomer(customer);
+                                        Get.back();
                                       },
                                     ),
                                   ),
@@ -223,6 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         DialogUtils.showLoading();
                                         await customerController
                                             .deleteCustomer(customer);
+                                        Get.back();
                                       },
                                     ),
                                   ),
@@ -271,12 +258,6 @@ class ItemBuilder extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           children: [
-            MediaQuery.of(context).size.width > 400
-                ? SubItemBuilder(
-                    flex: 1,
-                    value: appUser.id.toString(),
-                  )
-                : const SizedBox(),
             SubItemBuilder(
               flex: 4,
               value: appUser.name,
@@ -318,18 +299,18 @@ class ItemBuilder extends StatelessWidget {
                     ],
                   )
                 : Flexible(
-                    flex: 4,
+                    flex: 5,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         MaterialButton(
                           minWidth: 48,
-                          onPressed: onRemoveClicked,
+                          onPressed: onHistoryClicked,
                           padding: EdgeInsets.zero,
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                           shape: const CircleBorder(),
                           child: const Icon(
-                            Icons.delete_rounded,
+                            Icons.history,
                             size: 20,
                             color: Colors.white,
                           ),
@@ -347,6 +328,18 @@ class ItemBuilder extends StatelessWidget {
                               size: 20,
                               color: Colors.white,
                             ),
+                          ),
+                        ),
+                        MaterialButton(
+                          minWidth: 48,
+                          onPressed: onRemoveClicked,
+                          padding: EdgeInsets.zero,
+                          color: Colors.red,
+                          shape: const CircleBorder(),
+                          child: const Icon(
+                            Icons.delete_rounded,
+                            size: 20,
+                            color: Colors.white,
                           ),
                         ),
                       ],

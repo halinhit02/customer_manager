@@ -58,107 +58,109 @@ class EditItemBuilder extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       constraints: const BoxConstraints(maxHeight: 380, maxWidth: 400),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 10),
+              child: TextField(
+                controller: nameController,
+                enabled: userAction == UserAction.create ||
+                    userAction == UserAction.edit,
+                textInputAction: TextInputAction.next,
+                onChanged: (value) {
+                  editedUser.name = value;
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  hintText: 'Nhập họ và tên',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+              child: TextField(
+                controller: phoneController,
+                enabled: userAction == UserAction.create ||
+                    userAction == UserAction.edit,
+                textInputAction: TextInputAction.next,
+                onChanged: (value) {
+                  editedUser.phone = value;
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  hintText: 'Nhập số điện thoại',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: TextField(
+                controller: moneyController,
+                enabled: userAction != UserAction.delete,
+                textInputAction: TextInputAction.done,
+                onChanged: (value) {
+                  editedUser.address = value;
+                },
+                onSubmitted: (value) {
+                  onAccepted();
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  hintText: 'Nhập địa chỉ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            MaterialButton(
+              onPressed: onAccepted,
               color: Theme.of(context).primaryColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 10),
-            child: TextField(
-              controller: nameController,
-              enabled: userAction == UserAction.create ||
-                  userAction == UserAction.edit,
-              textInputAction: TextInputAction.next,
-              onChanged: (value) {
-                editedUser.name = value;
-              },
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
-                ),
-                hintText: 'Nhập họ và tên',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: const Text(
+                  'Xác nhận',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: TextField(
-              controller: phoneController,
-              enabled: userAction == UserAction.create ||
-                  userAction == UserAction.edit,
-              textInputAction: TextInputAction.next,
-              onChanged: (value) {
-                editedUser.phone = value;
-              },
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
-                ),
-                hintText: 'Nhập số điện thoại',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: TextField(
-              controller: moneyController,
-              enabled: userAction != UserAction.delete,
-              textInputAction: TextInputAction.done,
-              onChanged: (value) {
-                editedUser.address = value;
-              },
-              onSubmitted: (value) {
-                onAccepted();
-              },
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
-                ),
-                hintText: 'Nhập địa chỉ',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          MaterialButton(
-            onPressed: onAccepted,
-            color: Theme.of(context).primaryColor,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: const Text(
-                'Xác nhận',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -9,8 +9,10 @@ class CustomerController extends GetxController {
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
   final List<Customer> _customerList = [];
   final List<Customer> _showCustomerList = [];
+  bool _isLoading = true;
 
   List<Customer> get customerList => _showCustomerList;
+  bool get isLoading => _isLoading;
 
   @override
   void onInit() {
@@ -20,9 +22,10 @@ class CustomerController extends GetxController {
 
   getAllCustomer() async {
     try {
+      _isLoading = true;
       var snapshots = await _dbRef.child(AppConstants.customers).get();
+      _customerList.clear();
       if (snapshots.exists) {
-        _customerList.clear();
         _showCustomerList.clear();
         for (var snapshot in snapshots.children) {
           if (snapshot.exists) {
@@ -31,10 +34,11 @@ class CustomerController extends GetxController {
         }
         _showCustomerList.addAll(_customerList);
       }
-      update();
     } catch (e) {
       DialogUtils.showMessage(e.toString());
     }
+    _isLoading = false;
+    update();
   }
 
   Future setCustomer(Customer customer) async {
@@ -57,13 +61,12 @@ class CustomerController extends GetxController {
       await _dbRef
           .child(AppConstants.customers)
           .child(customer.id.toString())
-          .set(customer.toJson());
+          .update(customer.toJson());
       getAllCustomer();
       update();
     } catch (e) {
       DialogUtils.showMessage(e.toString());
     }
-    Get.back();
   }
 
   Future deleteCustomer(Customer customer) async {
@@ -77,7 +80,6 @@ class CustomerController extends GetxController {
     } catch (e) {
       DialogUtils.showMessage(e.toString());
     }
-    Get.back();
   }
 
   void searchCustomer(String keyword) {

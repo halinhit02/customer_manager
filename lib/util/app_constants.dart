@@ -18,4 +18,5 @@ class AppConstants {
   //firebase
   static const customers = 'Customers';
   static const history = 'History';
+  static const notification = 'Notifications';
 }

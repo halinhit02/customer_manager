@@ -1,19 +1,26 @@
+import 'package:customer_manager/controller/history_controller.dart';
 import 'package:customer_manager/model/history.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../util/number_utils.dart';
 
 class ItemHistory extends StatelessWidget {
-  const ItemHistory({Key? key, required this.history}) : super(key: key);
+  const ItemHistory(
+      {Key? key, required this.history, required this.onDeleteClicked})
+      : super(key: key);
 
   final History history;
+
+  final Function() onDeleteClicked;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,17 +35,60 @@ class ItemHistory extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text(DateTime.fromMillisecondsSinceEpoch(history.time)
-                  .toIso8601String()),
+              Text(
+                FormatUtils.formatDate(history.time),
+              ),
             ],
           ),
-          Text(
-            NumberUtils.formatMoney(history.amount),
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).primaryColor,
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                FormatUtils.formatMoney(history.amount),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
           ),
+          const SizedBox(
+            width: 10,
+          ),
+          InkWell(
+            onTap: () {
+              showCupertinoDialog(
+                  context: context,
+                  builder: (_) => CupertinoAlertDialog(
+                        title: const Text('Thông báo'),
+                        content:
+                            const Text('Bạn có chắc muốn xóa thông báo này?'),
+                        actions: [
+                          CupertinoDialogAction(
+                            isDefaultAction: true,
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          CupertinoDialogAction(
+                            onPressed: () {
+                              Get.back();
+                              onDeleteClicked();
+                            },
+                            child: const Text('Ok'),
+                          ),
+                        ],
+                      ));
+            },
+            child: const Padding(
+              padding: const EdgeInsets.all(10),
+              child: const Icon(
+                Icons.clear,
+                size: 20,
+              ),
+            ),
+          )
         ],
       ),
     );

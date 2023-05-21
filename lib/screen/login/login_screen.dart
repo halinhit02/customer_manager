@@ -8,6 +8,32 @@ import 'package:get/get.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  void onLogin(String email, String password) {
+    if (email.isEmpty) {
+      DialogUtils.showMessage('Nhập email người dùng.');
+      return;
+    } else if (!email.isEmail) {
+      DialogUtils.showMessage('Email không đúng định dạng.');
+    } else if (password.isEmpty) {
+      DialogUtils.showMessage('Nhập mật khẩu người dùng.');
+      return;
+    } else if (password.length < 6) {
+      DialogUtils.showMessage('Nhập mật khẩu từ 6 kí tự trở lên.');
+      return;
+    } else {
+      DialogUtils.showLoading();
+      Get.find<AuthController>()
+          .signInWithEmailPassword(email, password)
+          .then((value) {
+        Get.back();
+        Get.offAllNamed(AppRoutes.home);
+      }).catchError((e) {
+        Get.back();
+        DialogUtils.showMessage(e);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController emailEditingController = TextEditingController();
@@ -56,42 +82,28 @@ class LoginScreen extends StatelessWidget {
             TextField(
               controller: passwordEditingController,
               decoration: InputDecoration(
-                  hintText: 'Mật khẩu',
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
+                hintText: 'Mật khẩu',
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 15,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(13),
+                  borderSide: const BorderSide(
+                    width: 1,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13),
-                    borderSide: const BorderSide(
-                      width: 1,
-                    ),
-                  )),
+                ),
+              ),
+              onSubmitted: (value) => onLogin(
+                  emailEditingController.text, passwordEditingController.text),
+              obscureText: true,
             ),
             const SizedBox(
               height: 20,
             ),
             MaterialButton(
-              onPressed: () {
-                String password = passwordEditingController.text;
-                String email = emailEditingController.text;
-                if (email.isEmpty) {
-                  DialogUtils.showMessage('Nhập email người dùng.');
-                  return;
-                } else if (!email.isEmail) {
-                  DialogUtils.showMessage('Email không đúng định dạng.');
-                } else if (password.isEmpty) {
-                  DialogUtils.showMessage('Nhập mật khẩu người dùng.');
-                  return;
-                } else if (password.length < 6) {
-                  DialogUtils.showMessage('Nhập mật khẩu từ 6 kí tự trở lên.');
-                  return;
-                } else {
-                  Get.find<AuthController>()
-                      .signInWithEmailPassword(email, password)
-                      .then((value) => Get.offAllNamed(AppRoutes.home));
-                }
-              },
+              onPressed: () => onLogin(
+                  emailEditingController.text, passwordEditingController.text),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(13),
               ),

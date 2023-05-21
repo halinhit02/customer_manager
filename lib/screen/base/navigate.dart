@@ -1,9 +1,14 @@
+import 'package:customer_manager/controller/auth_controller.dart';
+import 'package:customer_manager/util/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Navigate extends StatelessWidget {
-  const Navigate({Key? key, required this.onCreated}) : super(key: key);
+  const Navigate({Key? key, required this.onCreated, this.onSearchChanged})
+      : super(key: key);
 
   final Function() onCreated;
+  final Function(String)? onSearchChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +32,7 @@ class Navigate extends StatelessWidget {
         children: [
           IconButton(
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Get.toNamed(AppRoutes.notification);
               },
               icon: Icon(
                 Icons.book_rounded,
@@ -50,7 +55,11 @@ class Navigate extends StatelessWidget {
           Expanded(
             child: width >= 720
                 ? TextField(
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      if (onSearchChanged != null) {
+                        onSearchChanged!.call(value);
+                      }
+                    },
                     decoration: const InputDecoration(
                       icon: Icon(Icons.search_rounded),
                       hintText: "Nhập họ tên hoặc số điện thoại người dùng...",
@@ -64,11 +73,33 @@ class Navigate extends StatelessWidget {
             shape: const CircleBorder(),
             color: Theme.of(context).primaryColor,
             onPressed: onCreated,
-            minWidth: 36,
+            minWidth: 40,
+            padding: EdgeInsets.zero,
             child: Container(
               padding: const EdgeInsets.all(8),
               child: const Icon(
                 Icons.add,
+                size: 22,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          MaterialButton(
+            shape: const CircleBorder(),
+            color: Colors.redAccent,
+            onPressed: () async {
+              await Get.find<AuthController>().signOut();
+              Get.offAllNamed(AppRoutes.login);
+            },
+            minWidth: 40,
+            padding: EdgeInsets.zero,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: const Icon(
+                Icons.logout,
                 size: 22,
                 color: Colors.white,
               ),

@@ -8,27 +8,32 @@ import '../util/dialog_utils.dart';
 class HistoryController extends GetxController {
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
   final List<History> _historyList = [];
+  bool _isLoading = false;
 
   List<History> get historyList => _historyList;
 
+  bool get isLoading => _isLoading;
+
   Future getAllHistory(String customerID) async {
     try {
+      _isLoading = true;
       var snapshots = await _dbRef
           .child(AppConstants.customers)
           .child(customerID)
           .child(AppConstants.history)
           .get();
+      _historyList.clear();
       if (snapshots.exists) {
-        _historyList.clear();
         for (var snapshot in snapshots.children) {
           _historyList.add(History.fromMap(snapshot.value as Map));
         }
-        update();
       }
     } catch (e) {
       print(e);
       DialogUtils.showMessage(e.toString());
     }
+    _isLoading = false;
+    update();
   }
 
   Future setHistory(String customerID, History history) async {
@@ -37,10 +42,25 @@ class HistoryController extends GetxController {
           .child(AppConstants.customers)
           .child(customerID)
           .child(AppConstants.history)
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .child(history.id)
           .set(history.toMap());
       _historyList.add(history);
       update();
+    } catch (e) {
+      print(e);
+      DialogUtils.showMessage(e.toString());
+    }
+  }
+
+  Future deleteHistory(String customerID, String historyID) async {
+    try {
+      await _dbRef
+          .child(AppConstants.customers)
+          .child(customerID)
+          .child(AppConstants.history)
+          .child(historyID)
+          .remove();
+      await getAllHistory(customerID);
     } catch (e) {
       print(e);
       DialogUtils.showMessage(e.toString());

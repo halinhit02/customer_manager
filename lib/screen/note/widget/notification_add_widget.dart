@@ -1,37 +1,34 @@
-import 'package:customer_manager/model/history.dart';
+import 'package:customer_manager/model/notification.dart';
 import 'package:customer_manager/util/dialog_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 
-class HistoryAddWidget extends StatelessWidget {
-  const HistoryAddWidget({Key? key, required this.onConfirmed})
+class NotificationAddWidget extends StatelessWidget {
+  const NotificationAddWidget({Key? key, required this.onConfirmed})
       : super(key: key);
 
-  final Function(History) onConfirmed;
+  final Function(Notification) onConfirmed;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController amountController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController contentController = TextEditingController();
 
     var timeMillis = DateTime.now().millisecondsSinceEpoch;
-    var history = History(
+    var notification = Notification(
         id: timeMillis.toString(),
-        amount: 0,
-        description: '',
-        time: timeMillis);
+        title: '',
+        content: '',
+        createdAt: timeMillis);
 
     onAccepted() {
-      if (amountController.text.isEmpty) {
-        DialogUtils.showMessage("Nhập số tiền.");
+      if (notification.title.isEmpty) {
+        DialogUtils.showMessage("Nhập tiêu đề.");
         return;
-      } else if (history.amount <= 0) {
-        DialogUtils.showMessage("Nhập số tiền là số lớn hơn 0.");
-        return;
-      } else if (history.description.isEmpty) {
-        DialogUtils.showMessage("Nhập mô tả cho đơn hàng.");
+      } else if (notification.content.isEmpty) {
+        DialogUtils.showMessage("Nhập nội dung.");
         return;
       }
-      onConfirmed.call(history);
+      onConfirmed.call(notification);
     }
 
     return Container(
@@ -43,7 +40,7 @@ class HistoryAddWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Thêm Lịch Sử',
+              'Thêm Thông báo',
               style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontSize: 20,
@@ -53,10 +50,10 @@ class HistoryAddWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 30.0, bottom: 10),
               child: TextField(
-                controller: descriptionController,
+                controller: titleController,
                 textInputAction: TextInputAction.done,
                 onChanged: (value) {
-                  history.description = value;
+                  notification.title = value;
                 },
                 onSubmitted: (value) {
                   onAccepted();
@@ -66,7 +63,7 @@ class HistoryAddWidget extends StatelessWidget {
                     vertical: 10,
                     horizontal: 10,
                   ),
-                  hintText: 'Nhập mô tả',
+                  hintText: 'Nhập tiêu đề',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -76,18 +73,18 @@ class HistoryAddWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: TextField(
-                controller: amountController,
+                controller: contentController,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  history.amount = int.parse(value);
+                  notification.content = value;
                 },
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 10,
                     horizontal: 10,
                   ),
-                  hintText: 'Nhập số tiền',
+                  hintText: 'Nhập nội dung',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
