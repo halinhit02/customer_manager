@@ -36,10 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     return Scaffold(
+
       body: SafeArea(
+
         child: Column(
+
           children: [
             Navigate(
               onCreated: () {
