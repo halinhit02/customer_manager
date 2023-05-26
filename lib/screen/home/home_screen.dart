@@ -40,11 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     return Scaffold(
-
       body: SafeArea(
-
         child: Column(
-
           children: [
             Navigate(
               onCreated: () {

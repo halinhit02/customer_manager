@@ -10,15 +10,15 @@ class LoginScreen extends StatelessWidget {
 
   void onLogin(String email, String password) {
     if (email.isEmpty) {
-      DialogUtils.showMessage('Nhập email người dùng.');
+      DialogUtils.showMessage('Nhập email người dùng. ');
       return;
     } else if (!email.isEmail) {
-      DialogUtils.showMessage('Email không đúng định dạng.');
+      DialogUtils.showMessage('Email không đúng định dạng. ');
     } else if (password.isEmpty) {
-      DialogUtils.showMessage('Nhập mật khẩu người dùng.');
+      DialogUtils.showMessage('Nhập mật khẩu người dùng. ');
       return;
     } else if (password.length < 6) {
-      DialogUtils.showMessage('Nhập mật khẩu từ 6 kí tự trở lên.');
+      DialogUtils.showMessage('Nhập mật khẩu từ 6 kí tự trở lên. ');
       return;
     } else {
       DialogUtils.showLoading();
@@ -104,7 +104,7 @@ class LoginScreen extends StatelessWidget {
             ),
             MaterialButton(
               onPressed: () => onLogin(emailEditingController.text.trim(),
-                  passwordEditingController.text),
+                  passwordEditingController.text.trim()),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(13),
               ),
