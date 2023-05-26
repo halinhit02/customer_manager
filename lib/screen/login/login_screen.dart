@@ -95,15 +95,16 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               onSubmitted: (value) => onLogin(
-                  emailEditingController.text, passwordEditingController.text),
+                  emailEditingController.text.trim(),
+                  passwordEditingController.text),
               obscureText: true,
             ),
             const SizedBox(
               height: 20,
             ),
             MaterialButton(
-              onPressed: () => onLogin(
-                  emailEditingController.text, passwordEditingController.text),
+              onPressed: () => onLogin(emailEditingController.text.trim(),
+                  passwordEditingController.text),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(13),
               ),

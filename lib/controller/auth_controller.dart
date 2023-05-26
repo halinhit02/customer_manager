@@ -1,4 +1,3 @@
-import 'package:customer_manager/util/dialog_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +10,11 @@ class AuthController extends GetxController {
     return _auth.currentUser != null;
   }
 
-  Future<User?> getCurrentUser() async {
+  bool isAdmin() {
+    return (getCurrentUser()?.email ?? '').contains('admin');
+  }
+
+  User? getCurrentUser() {
     return _auth.currentUser;
   }
 

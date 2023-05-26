@@ -1,3 +1,4 @@
+import 'package:customer_manager/controller/auth_controller.dart';
 import 'package:customer_manager/controller/notification_controller.dart';
 import 'package:customer_manager/screen/note/widget/item_notification.dart';
 import 'package:customer_manager/screen/note/widget/notification_add_widget.dart';
@@ -13,7 +14,7 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Thông báo'),
-        actions: [
+        actions: Get.find<AuthController>().isAdmin() ? [
           IconButton(
             onPressed: () {
               showDialog(
@@ -36,7 +37,7 @@ class NotificationScreen extends StatelessWidget {
             padding: EdgeInsets.zero,
             icon: const Icon(Icons.add),
           ),
-        ],
+        ] : null,
       ),
       body: SafeArea(
         child: RefreshIndicator(

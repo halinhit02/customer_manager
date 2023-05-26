@@ -12,6 +12,7 @@ class CustomerController extends GetxController {
   bool _isLoading = true;
 
   List<Customer> get customerList => _showCustomerList;
+
   bool get isLoading => _isLoading;
 
   @override
@@ -83,12 +84,13 @@ class CustomerController extends GetxController {
   }
 
   void searchCustomer(String keyword) {
-    _showCustomerList.clear();
     if (keyword.trim().isEmpty) {
       _showCustomerList.addAll(_customerList);
     }
+    _showCustomerList.clear();
     _showCustomerList.addAll(_customerList.where((e) =>
         e.name.contains(keyword) ||
+        e.name.toLowerCase().contains(keyword.toLowerCase()) ||
         e.phone.contains(keyword) ||
         e.address.contains(keyword)));
     update();

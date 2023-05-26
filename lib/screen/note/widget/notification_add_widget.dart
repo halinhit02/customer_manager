@@ -51,7 +51,7 @@ class NotificationAddWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30.0, bottom: 10),
               child: TextField(
                 controller: titleController,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 onChanged: (value) {
                   notification.title = value;
                 },
@@ -74,8 +74,7 @@ class NotificationAddWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: TextField(
                 controller: contentController,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
                 onChanged: (value) {
                   notification.content = value;
                 },

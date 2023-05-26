@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
     authDomain: 'customermanager-5bd19.firebaseapp.com',
+    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
     measurementId: 'G-WWN2H0MJLH',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:668031586547:android:2ce2f9835f265751baa786',
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
+    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
   );
 
@@ -66,7 +68,9 @@ class DefaultFirebaseOptions {
     appId: '1:668031586547:ios:8cc54c8649dc4cb5baa786',
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
+    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
+    androidClientId: '668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com',
     iosClientId: '668031586547-22hmluu1870ues2c5qjvdphlnptp0p33.apps.googleusercontent.com',
     iosBundleId: 'com.nhom8.customerManager',
   );
@@ -76,7 +80,9 @@ class DefaultFirebaseOptions {
     appId: '1:668031586547:ios:8cc54c8649dc4cb5baa786',
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
+    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
+    androidClientId: '668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com',
     iosClientId: '668031586547-22hmluu1870ues2c5qjvdphlnptp0p33.apps.googleusercontent.com',
     iosBundleId: 'com.nhom8.customerManager',
   );

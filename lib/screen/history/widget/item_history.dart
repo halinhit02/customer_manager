@@ -1,3 +1,4 @@
+import 'package:customer_manager/controller/auth_controller.dart';
 import 'package:customer_manager/controller/history_controller.dart';
 import 'package:customer_manager/model/history.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,40 +56,42 @@ class ItemHistory extends StatelessWidget {
           const SizedBox(
             width: 10,
           ),
-          InkWell(
-            onTap: () {
-              showCupertinoDialog(
-                  context: context,
-                  builder: (_) => CupertinoAlertDialog(
-                        title: const Text('Thông báo'),
-                        content:
-                            const Text('Bạn có chắc muốn xóa thông báo này?'),
-                        actions: [
-                          CupertinoDialogAction(
-                            isDefaultAction: true,
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          CupertinoDialogAction(
-                            onPressed: () {
-                              Get.back();
-                              onDeleteClicked();
-                            },
-                            child: const Text('Ok'),
-                          ),
-                        ],
-                      ));
-            },
-            child: const Padding(
-              padding: const EdgeInsets.all(10),
-              child: const Icon(
-                Icons.clear,
-                size: 20,
-              ),
-            ),
-          )
+          Get.find<AuthController>().isAdmin()
+              ? InkWell(
+                  onTap: () {
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                              title: const Text('Thông báo'),
+                              content: const Text(
+                                  'Bạn có chắc muốn xóa thông báo này?'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                CupertinoDialogAction(
+                                  onPressed: () {
+                                    Get.back();
+                                    onDeleteClicked();
+                                  },
+                                  child: const Text('Ok'),
+                                ),
+                              ],
+                            ));
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.clear,
+                      size: 20,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );

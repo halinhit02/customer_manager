@@ -11,7 +11,7 @@ class History {
       required this.time});
 
   factory History.fromMap(Map<dynamic, dynamic> map) => History(
-        id: map['id'],
+        id: map['id'] ?? '',
         amount: map['amount'],
         description: map['description'],
         time: map['time'],

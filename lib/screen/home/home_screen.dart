@@ -6,6 +6,7 @@ import 'package:customer_manager/util/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controller/auth_controller.dart';
 import '../../controller/customer_controller.dart';
 import '../../model/customer.dart';
 import '../../model/user_action.dart';
@@ -100,14 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: GetBuilder<CustomerController>(
                     builder: (customerController) {
-                  if (customerController.customerList.isEmpty && !customerController.isLoading) {
+                  if (customerController.customerList.isEmpty &&
+                      !customerController.isLoading) {
                     return const Center(
                       child: Text('Không có dữ liệu.'),
                     );
                   } else if (customerController.isLoading) {
-                   return const Center(
-                     child: CircularProgressIndicator(),
-                   );
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   return Column(
                     children: [
@@ -283,20 +285,31 @@ class ItemBuilder extends StatelessWidget {
                       }
                     },
                     itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<int>>[
-                      const PopupMenuItem<int>(
-                        value: 0,
-                        child: Text('Lịch sử mua hàng'),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 1,
-                        child: Text('Chỉnh sửa'),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 2,
-                        child: Text('Xóa'),
-                      ),
-                    ],
+                        Get.find<AuthController>().isAdmin()
+                            ? <PopupMenuEntry<int>>[
+                                const PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Text('Lịch sử mua hàng'),
+                                ),
+                                const PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text('Chỉnh sửa'),
+                                ),
+                                const PopupMenuItem<int>(
+                                  value: 2,
+                                  child: Text('Xóa'),
+                                ),
+                              ]
+                            : <PopupMenuEntry<int>>[
+                                const PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Text('Lịch sử mua hàng'),
+                                ),
+                                const PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text('Chỉnh sửa'),
+                                ),
+                              ],
                   )
                 : Flexible(
                     flex: 5,
