@@ -44,7 +44,7 @@ class EditItemBuilder extends StatelessWidget {
         } else if (editedUser.phone.isEmpty) {
           DialogUtils.showMessage("Nhập số điện thoại khách hàng.");
           return;
-        } else if (editedUser.phone.length != 10 || !editedUser.phone.startsWith('0')) {
+        } else if (editedUser.phone.length != 10 || !editedUser.phone.startsWith('0')){
           DialogUtils.showMessage("Số điện thoại không hợp lệ.");
           return;
         } else if (editedUser.address.isEmpty) {
