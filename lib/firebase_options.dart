@@ -77,13 +77,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyA3eUs3QXnMUHNEebHviSXpRiUFdFjyb1s',
-    appId: '1:668031586547:ios:8cc54c8649dc4cb5baa786',
+    appId: '1:668031586547:ios:89b18a1840c89528baa786',
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
     databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
     androidClientId: '668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com',
-    iosClientId: '668031586547-22hmluu1870ues2c5qjvdphlnptp0p33.apps.googleusercontent.com',
-    iosBundleId: 'com.nhom8.customerManager',
+    iosClientId: '668031586547-q9hitnm71v2tbjgnoftjqhob4p5q1usj.apps.googleusercontent.com',
+    iosBundleId: 'com.nhom8.customerManager.RunnerTests',
   );
 }
