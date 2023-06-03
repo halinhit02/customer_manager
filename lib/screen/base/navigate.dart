@@ -50,7 +50,7 @@ class Navigate extends StatelessWidget {
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(
-            width: 30,
+            width: 20,
           ),
           Expanded(
             child: width >= 720
@@ -83,9 +83,6 @@ class Navigate extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-          ),
-          const SizedBox(
-            width: 10,
           ),
           MaterialButton(
             shape: const CircleBorder(),
