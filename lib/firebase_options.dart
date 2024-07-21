@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for android - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,47 +52,15 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBPydhAhOqf5d69qa5pKOthLuweo_wPRFA',
-    appId: '1:668031586547:web:d328f210d1cddc35baa786',
-    messagingSenderId: '668031586547',
-    projectId: 'customermanager-5bd19',
-    authDomain: 'customermanager-5bd19.firebaseapp.com',
-    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
-    storageBucket: 'customermanager-5bd19.appspot.com',
-    measurementId: 'G-WWN2H0MJLH',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBb2vd57BgTTMQTpdJwL6-DxLEH_rA1Tkw',
-    appId: '1:668031586547:android:2ce2f9835f265751baa786',
-    messagingSenderId: '668031586547',
-    projectId: 'customermanager-5bd19',
-    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
-    storageBucket: 'customermanager-5bd19.appspot.com',
-  );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA3eUs3QXnMUHNEebHviSXpRiUFdFjyb1s',
-    appId: '1:668031586547:ios:8cc54c8649dc4cb5baa786',
+    appId: '1:668031586547:ios:932a419f8eb48ef9baa786',
     messagingSenderId: '668031586547',
     projectId: 'customermanager-5bd19',
     databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
     storageBucket: 'customermanager-5bd19.appspot.com',
     androidClientId: '668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com',
-    iosClientId: '668031586547-22hmluu1870ues2c5qjvdphlnptp0p33.apps.googleusercontent.com',
-    iosBundleId: 'com.nhom8.customerManager',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA3eUs3QXnMUHNEebHviSXpRiUFdFjyb1s',
-    appId: '1:668031586547:ios:89b18a1840c89528baa786',
-    messagingSenderId: '668031586547',
-    projectId: 'customermanager-5bd19',
-    databaseURL: 'https://customermanager-5bd19-default-rtdb.firebaseio.com',
-    storageBucket: 'customermanager-5bd19.appspot.com',
-    androidClientId: '668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com',
-    iosClientId: '668031586547-q9hitnm71v2tbjgnoftjqhob4p5q1usj.apps.googleusercontent.com',
-    iosBundleId: 'com.nhom8.customerManager.RunnerTests',
+    iosClientId: '668031586547-o9fjvrp48fud4sg17kajq6lol8rrj83s.apps.googleusercontent.com',
+    iosBundleId: 'com.halinhit.customermanager',
   );
 }

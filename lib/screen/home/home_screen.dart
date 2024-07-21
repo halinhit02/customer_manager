@@ -1,15 +1,20 @@
 import 'dart:async';
 
+import 'package:customer_manager/controller/admob_controller.dart';
 import 'package:customer_manager/util/app_constants.dart';
 import 'package:customer_manager/util/app_routes.dart';
+import 'package:customer_manager/util/app_utils.dart';
 import 'package:customer_manager/util/dialog_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../controller/auth_controller.dart';
 import '../../controller/customer_controller.dart';
 import '../../model/customer.dart';
 import '../../model/user_action.dart';
+import '../base/banner_ad_widget.dart';
 import '../base/edit_item_builder.dart';
 import '../base/navigate.dart';
 
@@ -36,207 +41,321 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Get.find<AdmobController>().loadBannerAd();
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    Get.find<AdmobController>().loadAppOpenAd();
+    AppStateEventNotifier.startListening();
+    AppStateEventNotifier.appStateStream
+        .forEach((state) => _onAppStateChanged(state));
+  }
+
+  void _onAppStateChanged(AppState appState) {
+    if (appState == AppState.foreground) {
+      Get.find<AdmobController>().showAdIfAvailable();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Navigate(
-              onCreated: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: EditItemBuilder(
-                      title: 'Thêm Khách Hàng',
-                      onConfirmed: (Customer customer) async {
-                        Navigator.of(context).pop();
-                        DialogUtils.showLoading();
-                        await Get.find<CustomerController>()
-                            .setCustomer(customer);
-                      },
+    return FutureBuilder<bool>(
+        future: AppUtils.isUpdate(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            DialogUtils.showMessage(snapshot.error.toString(), isError: true);
+            return const Scaffold();
+          }
+          if (snapshot.hasData && snapshot.data!) {
+            return Scaffold(
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Upgrade Application',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    child: Text(
+                      'You are using older application version. Please, upgrade to latest application version.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
-                );
-              },
-              onSearchChanged: (value) {
-                Get.find<CustomerController>().searchCustomer(value);
-              },
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            MediaQuery.of(context).size.width < 420
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                      bottom: 10,
+                  MaterialButton(
+                    onPressed: () => AppUtils.openAppOnStore(),
+                    color: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    child: TextField(
-                      controller: searchEditingController,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide()),
-                        hintText:
-                            'Nhập họ tên hoặc số điện thoại người dùng...',
-                        hintStyle: const TextStyle(fontSize: 14),
-                      ),
-                      onChanged: (value) {
-                        Get.find<CustomerController>().searchCustomer(value);
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Navigate(
+                    onAccount: () {
+                      Get.toNamed(AppRoutes.staff);
+                    },
+                    onDeleteAccount: () {
+                      showCupertinoDialog(
+                          context: context,
+                          builder: (_) => CupertinoAlertDialog(
+                                title: const Text('Xoá tài khoản'),
+                                content: const Text(
+                                    'Bạn có chắc muốn xoá vĩnh viễn tài khoản và tất cả dữ liệu?'),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: const Text('Huỷ'),
+                                  ),
+                                  CupertinoDialogAction(
+                                    onPressed: () async {
+                                      await Get.find<AuthController>()
+                                          .deleteAccount();
+                                      Get.offAllNamed(AppRoutes.login);
+                                    },
+                                    child: const Text('Xoá'),
+                                  ),
+                                ],
+                              ));
+                    },
+                    onSearchChanged: (value) {
+                      Get.find<CustomerController>().searchCustomer(value);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  MediaQuery.of(context).size.width < 420
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            bottom: 10,
+                          ),
+                          child: TextField(
+                            controller: searchEditingController,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide()),
+                              hintText:
+                                  'Nhập họ tên hoặc số điện thoại người dùng...',
+                              hintStyle: const TextStyle(fontSize: 14),
+                            ),
+                            onChanged: (value) {
+                              Get.find<CustomerController>()
+                                  .searchCustomer(value);
+                            },
+                          ),
+                        )
+                      : const SizedBox(),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await Get.find<CustomerController>().getAllCustomer();
                       },
-                    ),
-                  )
-                : const SizedBox(),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await Get.find<CustomerController>().getAllCustomer();
-                },
-                child: GetBuilder<CustomerController>(
-                    builder: (customerController) {
-                  if (customerController.customerList.isEmpty &&
-                      !customerController.isLoading) {
-                    return const Center(
-                      child: Text('Không có dữ liệu.'),
-                    );
-                  } else if (customerController.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
+                      child: GetBuilder<CustomerController>(
+                          builder: (customerController) {
+                        if (customerController.customerList.isEmpty &&
+                            !customerController.isLoading) {
+                          return const Center(
+                            child: Text('Không có dữ liệu.'),
+                          );
+                        } else if (customerController.isLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return Column(
                           children: [
-                            const SubItemBuilder(
-                              flex: 4,
-                              value: 'Họ tên',
-                              isTitle: true,
-                            ),
-                            const SubItemBuilder(
-                              flex: 4,
-                              value: 'Điện thoại',
-                              isTitle: true,
-                            ),
-                            const SubItemBuilder(
-                              flex: 3,
-                              value: 'Địa chỉ',
-                              isTitle: true,
-                            ),
-                            MediaQuery.of(context).size.width < 600
-                                ? const SizedBox(
-                                    width: 50,
-                                  )
-                                : Flexible(
-                                    flex: 5,
-                                    child: Row(),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Row(
+                                children: [
+                                  const SubItemBuilder(
+                                    flex: 4,
+                                    value: 'Họ tên',
+                                    isTitle: true,
                                   ),
+                                  const SubItemBuilder(
+                                    flex: 4,
+                                    value: 'Điện thoại',
+                                    isTitle: true,
+                                  ),
+                                  const SubItemBuilder(
+                                    flex: 3,
+                                    value: 'Địa chỉ',
+                                    isTitle: true,
+                                  ),
+                                  MediaQuery.of(context).size.width < 600
+                                      ? const SizedBox(
+                                          width: 50,
+                                        )
+                                      : const Flexible(
+                                          flex: 5,
+                                          child: Row(),
+                                        ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount:
+                                    customerController.customerList.length,
+                                controller: _scrollController,
+                                itemBuilder: (_, index) {
+                                  var user =
+                                      customerController.customerList[index];
+                                  return ItemBuilder(
+                                    appUser: user,
+                                    itemBg: AppConstants.colorItems[index % 6],
+                                    onItemClicked: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: EditItemBuilder(
+                                            title: 'Thông Tin Khách Hàng',
+                                            user: user,
+                                            userAction: UserAction.delete,
+                                            onConfirmed:
+                                                (Customer customer) async {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    onHistoryClicked: () {
+                                      Get.toNamed(
+                                          AppRoutes.getHistoryRoute(user.id));
+                                    },
+                                    onEditClicked: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: EditItemBuilder(
+                                            title: 'Chỉnh Sửa Thông Tin',
+                                            userAction: UserAction.edit,
+                                            user: user,
+                                            onConfirmed:
+                                                (Customer customer) async {
+                                              Navigator.of(context).pop();
+                                              DialogUtils.showLoading();
+                                              await customerController
+                                                  .updateCustomer(customer);
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    onRemoveClicked: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: EditItemBuilder(
+                                            title: 'Xóa Khách Hàng',
+                                            userAction: UserAction.delete,
+                                            user: user,
+                                            onConfirmed:
+                                                (Customer customer) async {
+                                              Navigator.of(context).pop();
+                                              DialogUtils.showLoading();
+                                              await customerController
+                                                  .deleteCustomer(customer);
+                                              Get.back();
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: customerController.customerList.length,
-                          controller: _scrollController,
-                          itemBuilder: (_, index) {
-                            var user = customerController.customerList[index];
-                            return ItemBuilder(
-                              appUser: user,
-                              itemBg: AppConstants.colorItems[index % 6],
-                              onItemClicked: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: EditItemBuilder(
-                                      title: 'Thông Tin Khách Hàng',
-                                      user: user,
-                                      userAction: UserAction.delete,
-                                      onConfirmed: (Customer customer) async {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                              onHistoryClicked: () {
-                                Get.toNamed(AppRoutes.getHistoryRoute(user.id));
-                              },
-                              onEditClicked: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: EditItemBuilder(
-                                      title: 'Chỉnh Sửa Thông Tin',
-                                      userAction: UserAction.edit,
-                                      user: user,
-                                      onConfirmed: (Customer customer) async {
-                                        Navigator.of(context).pop();
-                                        DialogUtils.showLoading();
-                                        await customerController
-                                            .updateCustomer(customer);
-                                        Get.back();
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                              onRemoveClicked: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: EditItemBuilder(
-                                      title: 'Xóa Khách Hàng',
-                                      userAction: UserAction.delete,
-                                      user: user,
-                                      onConfirmed: (Customer customer) async {
-                                        Navigator.of(context).pop();
-                                        DialogUtils.showLoading();
-                                        await customerController
-                                            .deleteCustomer(customer);
-                                        Get.back();
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+                        );
+                      }),
+                    ),
+                  ),
+                  if (GetPlatform.isMobile) const BannerAdWidget(),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+            floatingActionButton: Padding(
+              padding: Get.size.width < 480
+                  ? EdgeInsets.only(
+                      bottom: Get.find<AdmobController>()
+                              .bannerAd
+                              ?.size
+                              .height
+                              .toDouble() ??
+                          0)
+                  : EdgeInsets.zero,
+              child: FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: EditItemBuilder(
+                        title: 'Thêm Khách Hàng',
+                        onConfirmed: (Customer customer) async {
+                          Navigator.of(context).pop();
+                          DialogUtils.showLoading();
+                          await Get.find<CustomerController>()
+                              .setCustomer(customer);
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.add_rounded,
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
 
 class ItemBuilder extends StatelessWidget {
   const ItemBuilder(
-
       {Key? key,
       required this.appUser,
       required this.itemBg,

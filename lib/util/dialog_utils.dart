@@ -65,11 +65,13 @@ class DialogUtils {
     );
   }
 
-  static void showMessage(String message) {
+  static void showMessage(String message, {bool isError = true}) {
     Get.showSnackbar(
       GetSnackBar(
         message: message,
-        backgroundColor: Colors.red.shade700,
+        backgroundColor: isError ? Colors.red.shade700 : Get.theme.primaryColor,
+        snackPosition: SnackPosition.BOTTOM,
+        snackStyle: SnackStyle.GROUNDED,
         duration: const Duration(seconds: 4),
       ),
     );

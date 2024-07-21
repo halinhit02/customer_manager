@@ -1,4 +1,4 @@
-package com.nhom8.customer_manager
+package com.halinhit.customer_manager
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,9 +4,10 @@ import 'package:get/get.dart';
 
 import '../model/customer.dart';
 import '../util/dialog_utils.dart';
+import 'auth_controller.dart';
 
 class CustomerController extends GetxController {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+  DatabaseReference _dbRef = FirebaseDatabase.instance.ref(AppConstants.stores);
   final List<Customer> _customerList = [];
   final List<Customer> _showCustomerList = [];
   bool _isLoading = true;
@@ -17,8 +18,10 @@ class CustomerController extends GetxController {
 
   @override
   void onInit() {
-    getAllCustomer();
     super.onInit();
+    _dbRef = _dbRef
+        .child(Get.find<AuthController>().appUser?.adminUid ?? 'WrongKey');
+    getAllCustomer();
   }
 
   getAllCustomer() async {
@@ -26,8 +29,8 @@ class CustomerController extends GetxController {
       _isLoading = true;
       var snapshots = await _dbRef.child(AppConstants.customers).get();
       _customerList.clear();
+      _showCustomerList.clear();
       if (snapshots.exists) {
-        _showCustomerList.clear();
         for (var snapshot in snapshots.children) {
           if (snapshot.exists) {
             _customerList.add(Customer.fromJson(snapshot.value as Map));
@@ -50,11 +53,12 @@ class CustomerController extends GetxController {
           .set(customer.toJson());
       _customerList.add(customer);
       _showCustomerList.add(customer);
+      Get.back();
       update();
     } catch (e) {
+      Get.back();
       DialogUtils.showMessage(e.toString());
     }
-    Get.back();
   }
 
   Future updateCustomer(Customer customer) async {
@@ -64,8 +68,10 @@ class CustomerController extends GetxController {
           .child(customer.id.toString())
           .update(customer.toJson());
       getAllCustomer();
+      Get.back();
       update();
     } catch (e) {
+      Get.back();
       DialogUtils.showMessage(e.toString());
     }
   }

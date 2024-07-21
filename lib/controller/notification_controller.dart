@@ -1,3 +1,4 @@
+import 'package:customer_manager/controller/auth_controller.dart';
 import 'package:customer_manager/model/notification.dart';
 import 'package:customer_manager/util/app_constants.dart';
 import 'package:customer_manager/util/dialog_utils.dart';
@@ -5,7 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 
 class NotificationController extends GetxController {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+  DatabaseReference _dbRef = FirebaseDatabase.instance.ref(AppConstants.stores);
 
   final List<Notification> _notificationList = [];
   bool _isLoading = true;
@@ -17,6 +18,9 @@ class NotificationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _dbRef = _dbRef.child(Get
+        .find<AuthController>()
+        .appUser?.adminUid ?? 'WrongKey');
     getAllNotification();
   }
 

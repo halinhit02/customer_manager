@@ -4,15 +4,23 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 
 import '../util/dialog_utils.dart';
+import 'auth_controller.dart';
 
 class HistoryController extends GetxController {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+  DatabaseReference _dbRef = FirebaseDatabase.instance.ref(AppConstants.stores);
   final List<History> _historyList = [];
   bool _isLoading = false;
 
   List<History> get historyList => _historyList;
 
   bool get isLoading => _isLoading;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _dbRef = _dbRef
+        .child(Get.find<AuthController>().appUser?.adminUid ?? 'WrongKey');
+  }
 
   Future getAllHistory(String customerID) async {
     try {

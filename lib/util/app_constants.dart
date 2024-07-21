@@ -1,10 +1,13 @@
 import 'dart:ui';
 
+import 'package:get/get.dart';
+
 class AppConstants {
-  static const APPNAME = 'Customer Manager';
+  static const APPNAME = 'CustomerX';
+  static const contact = 'https://halinhit.com';
 
   //Message
-  static const errorOccurred = 'Error! An error occurred. Please try again later';
+  static const errorOccurred = 'Đã xảy ra lỗi! Vui lòng thử lại.';
 
   static const List<Color> colorItems = [
     Color(0xffFEADCD),
@@ -15,8 +18,37 @@ class AppConstants {
     Color(0xffB9ACF2),
   ];
 
+  //storage
+  static const appUserKey = 'appUser';
+  static const installedKey = 'installed';
+
   //firebase
+  static const appUsers = 'AppUsers';
+  static const stores = 'Stores';
   static const customers = 'Customers';
-  static const history = 'History';
+  static const history = 'Histories';
   static const notification = 'Notifications';
+  static const staff = 'Staffs';
+  static const email = 'email';
+  static const password = 'password';
+  static const minimumBuildNumberApp = 'minimum_build_number_app';
+  static const androidPackageApp = 'android_package_app';
+  static const appleStoreId = 'apple_store_id';
+
+  static const defaultValueFireConfig = <String, dynamic>{
+    minimumBuildNumberApp: 0,
+    androidPackageApp: 'com.halinhit.customer_manager',
+    appleStoreId: '',
+  };
+
+  //admob
+  static String bannerUnitID = GetPlatform.isAndroid
+      ? 'ca-app-pub-5301774779419611/9345679737'
+      : 'ca-app-pub-5301774779419611/5782790933';
+  static String interstitialUnitID = GetPlatform.isAndroid
+      ? 'ca-app-pub-5301774779419611/7689779292'
+      : 'ca-app-pub-5301774779419611/3156627590';
+  static String appOpenUnitID = GetPlatform.isAndroid
+      ? 'ca-app-pub-5301774779419611/8443661607'
+      : 'ca-app-pub-5301774779419611/5399647550';
 }

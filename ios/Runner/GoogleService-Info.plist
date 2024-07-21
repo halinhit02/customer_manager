@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>668031586547-22hmluu1870ues2c5qjvdphlnptp0p33.apps.googleusercontent.com</string>
+	<string>668031586547-o9fjvrp48fud4sg17kajq6lol8rrj83s.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.668031586547-22hmluu1870ues2c5qjvdphlnptp0p33</string>
+	<string>com.googleusercontent.apps.668031586547-o9fjvrp48fud4sg17kajq6lol8rrj83s</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>668031586547-9docfjdgj20iiklri91sjnamtdn9094p.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.nhom8.customerManager</string>
+	<string>com.halinhit.customermanager</string>
 	<key>PROJECT_ID</key>
 	<string>customermanager-5bd19</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:668031586547:ios:8cc54c8649dc4cb5baa786</string>
+	<string>1:668031586547:ios:932a419f8eb48ef9baa786</string>
 	<key>DATABASE_URL</key>
 	<string>https://customermanager-5bd19-default-rtdb.firebaseio.com</string>
 </dict>
